@@ -17,6 +17,7 @@ const Home: NextPage = () => {
         bg='gray.800'
         p={8}
         flexDir='column'
+        borderRadius={'2xl'}
         >
           <Stack spacing={4}>
             <Input name='user' type={'text'} placeholder={'Usuário'} />
