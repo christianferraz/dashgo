@@ -57,7 +57,7 @@ const options : ApexOptions  = {
 const series = [
   {
     name: 'Series1',
-    data: [31, 120, 10, 20, 51, 30]
+    data: [31, 120, -10, 20, 51, 30]
   }
 ]
 
