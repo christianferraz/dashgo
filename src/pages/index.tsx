@@ -1,8 +1,13 @@
 import { Button, Flex, FormControl, FormLabel, Stack } from '@chakra-ui/react'
 import type { NextPage } from 'next'
-import { Input }  from '../components/Form/Input'
+import { Input } from '../components/Form/Input'
+import { FieldValues, useForm } from 'react-hook-form'
 
 const Home: NextPage = () => {
+  const { handleSubmit, register, formState } = useForm()
+  const handleSignIn = (values: FieldValues) => {
+    console.log(values)
+  }
   return (
     <Flex
       w='100vw'
@@ -17,11 +22,12 @@ const Home: NextPage = () => {
         p={8}
         flexDir='column'
         borderRadius={'2xl'}
+        onSubmit={handleSubmit(handleSignIn)}
         >
           <Stack spacing={4}>
-            <Input name='user' type={'text'} placeholder={'Usuário'} />
-            <Input name='Senha' type={'password'} placeholder={'Senha'}  />
-            <Button type='submit' mt='6' colorScheme='blue'>Entrar</Button>
+            <Input type={'text'} placeholder={'Usuário'} {...register('user')} />
+          <Input type={'password'} placeholder={'Senha'} {...register('password')} />
+            <Button type='submit' mt='6' colorScheme='blue' isLoading={formState.isSubmitting}>Entrar</Button>
           </Stack>
         </Flex>
     </Flex>
