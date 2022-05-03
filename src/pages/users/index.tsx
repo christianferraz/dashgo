@@ -48,7 +48,7 @@ const UserList = () => {
                 </Td>
                 <Td>
                   <Box>
-                    <Text fontWeight="bold">Christian e Miúcha</Text>
+                    <Text fontWeight="bold">Christian Ferraz</Text>
                     <Text fontSize="sm" color="gray.300">christian.pacheco@ebserh.gov.br</Text>
                   </Box>
                 </Td>

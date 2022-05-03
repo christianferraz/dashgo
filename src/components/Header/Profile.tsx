@@ -12,7 +12,7 @@ export const Profile = ({showProfileData = true}: ProfileProps) => {
         <Text>Christian Pacheco</Text>
         <Text color={"gray.300"} fontSize={"small"}>christianferraz@gmail.com</Text>
       </Box>)}
-    <Avatar size={"md"} name={"Christian Miúcha"} src="https://avatars.githubusercontent.com/u/49967009?v=4" />
+    <Avatar size={"md"} name={"Christian Ferraz"} src="https://avatars.githubusercontent.com/u/49967009?v=4" />
   </Flex>
   )
 }
