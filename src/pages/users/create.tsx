@@ -7,7 +7,6 @@ import { Sidebar } from "../../components/Sidebar"
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { ChangeEvent } from "react"
 
 interface CreateUserFormData {
   name: string
