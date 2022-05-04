@@ -1,5 +1,5 @@
 import { Input as ChakraInput, FormControl, FormLabel, InputProps as ChakraInputProps, FormErrorMessage } from "@chakra-ui/react"
-import { ChangeEvent, EventHandler, forwardRef, ForwardRefRenderFunction, KeyboardEvent, KeyboardEventHandler } from "react"
+import { FocusEvent, forwardRef, ForwardRefRenderFunction, KeyboardEvent } from "react"
 import { FieldError } from "react-hook-form"
 
 interface InputProps extends ChakraInputProps {
@@ -20,9 +20,11 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({name
     e.currentTarget.value = val
   }
 
-  const handleFormatName = (e?: ChangeEvent<HTMLInputElement>) => {
-    alert('a')
-    return
+  const handleFormatName = (e: FocusEvent<HTMLInputElement>) => {
+    let str = e.target.value.toLowerCase().replace(/\b(\w)/g, s => s.toUpperCase()).replace(/[Do | Da | Dos | Das | De]/g, s => s.toLowerCase())
+    e.target.value = str
+    return str
+
   }
 
 
@@ -33,7 +35,7 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({name
         { !!label && <FormLabel htmlFor={name}>{label}</FormLabel> }
         <ChakraInput
           name={name}
-          onChange={(e)=>handleFormatName(e)}
+          onBlurCapture={handleFormatName}
           id={name}
           placeholder={placeholder}
           _placeholder={{opacity:"0.4"}}

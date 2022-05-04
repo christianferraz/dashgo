@@ -37,7 +37,6 @@ const createUserFormSchema = yup.object().shape({
     if(digit2 !== CPF[10]){
       return false
     }
-    console.log(digit2)
     return true
   })
 })
@@ -48,7 +47,7 @@ const CreateUser = () => {
   })
   const handleCreateUser: SubmitHandler<CreateUserFormData> = async (values) => {
     await new Promise(resolve => setTimeout(resolve, 2000))
-    console.log(values)
+    console.log("valores submit", values)
   }
 
   return (
