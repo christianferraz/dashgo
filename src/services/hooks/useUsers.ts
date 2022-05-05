@@ -5,7 +5,7 @@ export type Users = {
   name: string
   id: number
   email: string
-  createAt?: string
+  createdAt?: string
 }
 
 type GetUsersResponse = {
@@ -29,7 +29,7 @@ type GetUsersResponse = {
       email: user.email,
       createdAt: new Date().toLocaleDateString('pt-BR', {
         day: '2-digit',
-        month: 'long',
+        month: 'short',
         year: 'numeric'
       })
     }

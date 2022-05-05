@@ -2,20 +2,24 @@ import { ChakraProvider } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
 import { SidebarDrawerProvider } from '../Contexts/SidebarDrawerContext'
 import { theme } from '../styles/theme'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { queryClient } from '../services/queryClient'
+import { AuthProvider } from '../Contexts/AuthContext'
 
-const queryClient = new QueryClient()
+
 
 function MyApp({ Component, pageProps }: AppProps) {
+
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider resetCSS theme={theme}>
-        <SidebarDrawerProvider>
-          <Component {...pageProps} />
-        </SidebarDrawerProvider>
+        <AuthProvider>
+          <SidebarDrawerProvider>
+            <Component {...pageProps} />
+          </SidebarDrawerProvider>
+        </AuthProvider>
       </ChakraProvider>
-      <ReactQueryDevtools />
     </QueryClientProvider>
   )
 }
