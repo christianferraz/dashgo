@@ -4,6 +4,8 @@ import { Header } from "../components/Header";
 import { Sidebar } from "../components/Sidebar"
 import { theme } from "../styles/theme"
 import { ApexOptions } from "apexcharts"
+import { useEffect } from "react"
+import { api } from "../services/api"
 
 const Chart = dynamic(() => import("react-apexcharts"), {ssr:false})
 
@@ -62,7 +64,10 @@ const series = [
   }
 ]
 
-export default function Dashboard () {
+const Dashboard = () => {
+  useEffect(() => {
+    api.get('/me').then(response => { })
+  },[])
   return (
     <Flex direction={"column"} h="100vh">
       <Header />
@@ -91,4 +96,10 @@ export default function Dashboard () {
       </Flex>
     </Flex>
   )
+}
+
+export default Dashboard
+
+function userEffect(arg0: () => void, arg1: never[]) {
+  throw new Error("Function not implemented.")
 }
