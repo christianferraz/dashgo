@@ -5,7 +5,9 @@ import { Sidebar } from "../components/Sidebar"
 import { theme } from "../styles/theme"
 import { ApexOptions } from "apexcharts"
 import { useEffect } from "react"
-import { api } from "../services/api"
+import { api } from "../services/apiClient"
+import { withSSRAuth } from "../utils/withSSRAuth"
+import { setupAPIClient } from "../services/api"
 
 const Chart = dynamic(() => import("react-apexcharts"), {ssr:false})
 
@@ -66,7 +68,8 @@ const series = [
 
 const Dashboard = () => {
   useEffect(() => {
-    api.get('/me').then(response => { })
+
+    api.get('/me').then(response => { console.log('dashbord e esta ok', response) }).catch(err => console.log('erro no dashboard', err))
   },[])
   return (
     <Flex direction={"column"} h="100vh">
@@ -100,6 +103,10 @@ const Dashboard = () => {
 
 export default Dashboard
 
-function userEffect(arg0: () => void, arg1: never[]) {
-  throw new Error("Function not implemented.")
-}
+export const getServerSideProps = withSSRAuth(async (ctx) => {
+  const apiClient = setupAPIClient(ctx)
+  const response = await apiClient.get('/me')
+  return {
+    props: {}
+  }
+})
