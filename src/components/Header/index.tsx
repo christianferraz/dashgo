@@ -1,5 +1,7 @@
-import { Flex, Icon, IconButton, useBreakpointValue } from "@chakra-ui/react"
+import { Box, Flex, Icon, IconButton, useBreakpointValue } from "@chakra-ui/react"
+import { useContext } from "react"
 import { RiMenuLine } from "react-icons/ri"
+import { AuthContext } from "../../Contexts/AuthContext"
 import { useSidebarDrawer } from "../../Contexts/SidebarDrawerContext"
 import { Logo } from "./Logo"
 import { NotificationsNav } from "./NotificationsNav"
@@ -8,6 +10,7 @@ import { SearchBox } from "./SearchBox"
 
 export const Header = () => {
   const { onOpen } = useSidebarDrawer()
+  const {signOut} = useContext(AuthContext)
   //mostra se for tamanho large
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -42,7 +45,9 @@ export const Header = () => {
         ml={"auto"}
       >
         <NotificationsNav />
-        <Profile showProfileData={isWideVersion} />
+        <Box as="a" onClick={signOut} >
+          <Profile showProfileData={isWideVersion} />
+        </Box>
       </Flex>
     </Flex>
   )

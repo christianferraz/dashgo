@@ -1,11 +1,13 @@
-import { api } from "../api"
+import { api } from "../apiClient"
 import { useQuery } from "react-query"
 
 export type Users = {
   name: string
   id: number
   email: string
-  createdAt?: string
+  createdAt?: string,
+  permissions?: string[],
+  roles?: string[]
 }
 
 type GetUsersResponse = {

@@ -15,7 +15,8 @@ type Users = {
 }
 
 type AuthContextData = {
-  signIn(credentials: SignInCredentials): Promise<void>
+  signIn: (credentials: SignInCredentials) => Promise<void>
+  signOut: () => void
   isAuthenticated: boolean
   user?: Users
 }
@@ -25,15 +26,27 @@ type AuthProviderProps = {
 }
 
 export const AuthContext = createContext({} as AuthContextData)
-export const signOut = () => {
-  destroyCookie(undefined, 'nextauth.token')
-  destroyCookie(undefined, 'nextauth.refreshToken')
-  Router.push('/')
-}
+
+
 
 export const AuthProvider = ({children}: AuthProviderProps) => {
   const [user, setUser] = useState<Users>()
   const isAuthenticated = !!user
+
+  // useEffect(()=>{
+  //   authChannel = new BroadcastChannel('auth')
+  //   authChannel.onmessage = (message) => {
+  //     console.log('authchannel.onmessage')
+  //     switch(message.data) {
+  //       case 'signOut':
+  //         signOut()
+  //         break
+
+  //       default:
+  //         break
+  //     }
+  //   }
+  // },[])
 
   useEffect(() => {
     const { 'nextauth.token': token } = parseCookies()
@@ -42,13 +55,21 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         const { username, permissions, roles } = response.data
         setUser({ username, permissions, roles })
       })
-        .catch(error => {
-          console.log('erro 47 ', error)
-         signOut()
+      .catch(error => {
+        console.log('erro 47 ', error)
+        signOut()
       })
     }
   },[])
 
+  const signOut = () => {
+    destroyCookie(undefined, 'nextauth.token')
+    destroyCookie(undefined, 'nextauth.refreshToken')
+    setUser(null)
+    //authChannel.postMessage('signOut')
+    console.log('signOut button')
+    Router.push('/')
+  }
   const signIn = async ({ username, password }: SignInCredentials) => {
     try {
       const response = await api.post('sessions', {
@@ -65,16 +86,16 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         path: '/'
       })
       setUser({ username, permissions, roles })
-      console.log(token)
       api.defaults.headers['Authorization'] = `Bearer ${token}`
       Router.push('/dashboard')
+      // authChannel.postMessage('signIn')
     } catch (err) {
       // Entra aqui em caso de senha inválida
       console.log(err)
     }
   }
   return (
-    <AuthContext.Provider value={{ signIn, isAuthenticated, user }}>
+    <AuthContext.Provider value={{ signIn, signOut, isAuthenticated, user }}>
       {children}
     </AuthContext.Provider>
   )

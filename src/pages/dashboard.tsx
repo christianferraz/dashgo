@@ -4,10 +4,12 @@ import { Header } from "../components/Header";
 import { Sidebar } from "../components/Sidebar"
 import { theme } from "../styles/theme"
 import { ApexOptions } from "apexcharts"
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { api } from "../services/apiClient"
 import { withSSRAuth } from "../utils/withSSRAuth"
 import { setupAPIClient } from "../services/api"
+import { AuthContext } from "../Contexts/AuthContext";
+import { Can } from "../components/Can";
 
 const Chart = dynamic(() => import("react-apexcharts"), {ssr:false})
 
@@ -67,37 +69,43 @@ const series = [
 ]
 
 const Dashboard = () => {
+  const { user, isAuthenticated } = useContext(AuthContext)
+
   useEffect(() => {
 
     api.get('/me').then(response => { console.log('dashbord e esta ok', response) }).catch(err => console.log('erro no dashboard', err))
   },[])
   return (
-    <Flex direction={"column"} h="100vh">
-      <Header />
-      <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
-        <Sidebar />
-        <SimpleGrid flex="1" gap="4" minChildWidth="320px" >
-          <Box
-            p={["6", "8"]}
-            bg="gray.800"
-            borderRadius={8}
-            pb="4"
-          >
-            <Text fontSize="lg" mb="4">Inscritos da semana</Text>
-            <Chart options={options} series={series} type="area" height={160} />
+    <>
+      <Can permissions={['metrics.list']}>
+        <Flex direction={"column"} h="100vh">
+          <Header />
+          <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
+            <Sidebar />
+            <SimpleGrid flex="1" gap="4" minChildWidth="320px" >
+              <Box
+                p={["6", "8"]}
+                bg="gray.800"
+                borderRadius={8}
+                pb="4"
+              >
+                <Text fontSize="lg" mb="4">Inscritos da semana</Text>
+                <Chart options={options} series={series} type="area" height={160} />
 
-          </Box>
-          <Box
-            p={["6", "8"]}
-            bg="gray.800"
-            borderRadius={8}
-            pb="4">
-            <Text fontSize="lg" mb="4">Taxa de abertura</Text>
-            <Chart options={options} series={series} type="area" height={160}  width="80%" />
-          </Box>
-        </SimpleGrid>
-      </Flex>
-    </Flex>
+              </Box>
+              <Box
+                p={["6", "8"]}
+                bg="gray.800"
+                borderRadius={8}
+                pb="4">
+                <Text fontSize="lg" mb="4">Taxa de abertura</Text>
+                <Chart options={options} series={series} type="area" height={160}  width="80%" />
+              </Box>
+            </SimpleGrid>
+          </Flex>
+        </Flex>
+      </Can>
+    </>
   )
 }
 
@@ -109,4 +117,7 @@ export const getServerSideProps = withSSRAuth(async (ctx) => {
   return {
     props: {}
   }
+}, {
+  permissions: ['metrics.list'],
+  roles:['administrator']
 })

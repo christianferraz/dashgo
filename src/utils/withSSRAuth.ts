@@ -1,11 +1,19 @@
+import jwtDecode from "jwt-decode"
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { destroyCookie, parseCookies } from "nookies"
 import { AuthTokenError } from "../services/errors/AuthTokenError"
+import { validateUserPermissions } from "./validateUserPermissions"
 
-export const withSSRAuth = <P>(fn: GetServerSideProps<P>): GetServerSideProps => {
+type WithSSRAuthOptions = {
+  permissions?: string[]
+  roles?: string[]
+}
+
+export const withSSRAuth = <P>(fn: GetServerSideProps<P>, options?: WithSSRAuthOptions): GetServerSideProps => {
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const cookies = parseCookies(ctx)
-    if (!cookies['nextauth.token']) {
+    const token = cookies['nextauth.token']
+    if (!token) {
       return {
         redirect: {
           destination: '/',
@@ -13,25 +21,35 @@ export const withSSRAuth = <P>(fn: GetServerSideProps<P>): GetServerSideProps =>
         }
       }
     }
+    if(options){
+      const user = jwtDecode<{permissions: string[], roles: string[]}>(token)
+      const {permissions, roles} = options
+      const userHasValidPermissions = validateUserPermissions({
+        user,
+        permissions,
+        roles
+      })
+      if(!userHasValidPermissions) {
+        return {
+          redirect: {
+            destination: '/users/create',
+            permanent: false
+          }
+        }
+      }
+    }
+
     try {
       return await fn(ctx)
     } catch (err) {
       if (err instanceof AuthTokenError) {
         destroyCookie(ctx, 'nextauth.token')
         destroyCookie(ctx, 'nextauth.refreshToken')
+        console.log('deslogando')
         return {
           redirect: {
             destination: '/',
             permanent: false
-          }
-        }
-      } else {
-        destroyCookie(ctx, 'nextauth.token')
-        destroyCookie(ctx, 'nextauth.refreshToken')
-        return {
-          redirect: {
-            destination: '/',
-            permanent: true
           }
         }
       }
